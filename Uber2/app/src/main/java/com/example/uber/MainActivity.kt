@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,15 +47,30 @@ class MainActivity : ComponentActivity() {
         setContent {
             UberTheme {
             }
-            ScreenLogin()
-            LoginBttn (onClick={})
-            LoginBttnFb(onClick={})
-            LoginBttnG (onClick={})
-            CampoDeBusqueda()
-            PantallaConfiguracion()
-
+            pantalla_inicial()
+            pantalla_login()
         }
     }
+}
+@Composable
+fun pantalla_inicial(){
+    Screen()
+    ImageUber()
+    ImageCar()
+    TextSafety()
+    OnBoardBttn(onClick={})
+}
+@Composable
+fun pantalla_login(){
+    ScreenLogin()
+    LoginBttn (onClick={})
+    LoginBttnFb(onClick={})
+    LoginBttnG (onClick={})
+    Textmobile()
+    CardNumber()
+    CardNumber2()
+    Textmobile2()
+    Textmobile3()
 }
 
 @Composable
@@ -134,7 +151,7 @@ fun OnBoardBttn (onClick: () -> Unit) {
             .offset(y = 825.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     )
-    {Button(onClick = { onClick() }, modifier = Modifier
+    {Button(onClick = { onClick() },shape = RectangleShape, modifier = Modifier
         .width(343.dp)
         .height(49.dp)
         .background( color = Color.Black),

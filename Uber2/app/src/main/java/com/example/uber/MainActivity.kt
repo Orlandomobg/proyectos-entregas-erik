@@ -47,8 +47,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             UberTheme {
             }
-            pantalla_inicial()
-            pantalla_login()
+            //pantalla_inicial()
+            //pantalla_login()
+            //ScreenOTP()
+            SafetyAlert()
         }
     }
 }
@@ -73,6 +75,22 @@ fun pantalla_login(){
     Textmobile3()
 }
 
+@Composable
+fun ScreenOTP(){
+    TextOTP()
+    Squares_OTP()
+    Putbttns(onClick = {})
+    Putbttns2(onClick = {})
+    IconPbttn(onClick = {})
+    IconPbttn2(onClick = {})
+    }
+
+@Composable
+fun SafetyAlert () {
+    bckgrndI (onClick = {})
+    Texts()
+    SABttn1(onClick = {})
+}
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(

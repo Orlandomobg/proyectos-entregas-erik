@@ -324,7 +324,7 @@ fun LoginBttnG (onClick: () -> Unit) {
     {Button(onClick = { onClick() },shape = RectangleShape, modifier = Modifier
         .width(343.dp)
         .height(49.dp)
-        .border(width = 0.7.dp, color = Color(0xFF000000), shape = RoundedCornerShape(size = 2.dp))
+        .border(width = 0.7.dp, color = Color(0xFF000000))
         .background( color = Color.White),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,

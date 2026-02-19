@@ -100,7 +100,6 @@ class StoreViewModel: ViewModel() {
     fun sendCart() {
         if(cartItems.isEmpty()) return
 
-
         // convetimos nuestro cart item a lo que la api espera
         val request = CartRequest(
             userId = 1, // user ficticio
@@ -122,5 +121,9 @@ class StoreViewModel: ViewModel() {
             }
         }
     }
+    fun doublequan(){
+        cartItems = cartItems.map {it.copy(quantity = it.quantity * 2)}
+    }
+
     fun clearResult() { sendResult = null }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "229359200936",
+    "project_id": "fakestore-firebase",
+    "storage_bucket": "fakestore-firebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:229359200936:android:08927c2d3d45a2666df09d",
+        "android_client_info": {
+          "package_name": "com.example.mercadona"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdsTCRdP6doRc5wgLqW2r0nrHp7i3-HBw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

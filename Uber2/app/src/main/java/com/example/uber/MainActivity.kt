@@ -117,44 +117,60 @@ fun PantallaLogin(authVm: AuthViewModel, navController: NavController) {
         }
     }
 }
-@Composable
-fun PantallaOTP(authVm: AuthViewModel, navController: NavController) {
-    var otpInput by remember { mutableStateOf("") }
 
-    LaunchedEffect(authVm.authState) {
-        if (authVm.authState is AuthState.Authenticated) {
-            navController.navigate(Routes.HOME)
+@Composable
+fun PantallaOTP(
+    authVm: AuthViewModel,
+    onBack: () -> Unit,
+    onSuccess: () -> Unit
+) {
+    val state = viewModel.authState
+    var currentCode by remember { mutableStateOf("") }
+
+    // el estado  cambia para al Home
+    LaunchedEffect(state) {
+        if (state is AuthState.Authenticated) {
+            onSuccess()
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
-        TextOTP() // Tu función visual
+    Box(modifier = Modifier.fillMaxSize()) {
+        TextOTP(viewModel.phoneNumber)
 
-        // Aquí deberías integrar el input dentro de tus "Squares"
-        // Por ahora, usamos un campo invisible para capturar el texto
-        BasicTextField(
-            value = otpInput,
-            onValueChange = { if (it.length <= 6) otpInput = it },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.align(Alignment.Center).alpha(0f) // Invisible pero funcional
-        )
-
-        // Dibujamos tus cuadros (puedes pasarle el otpInput para que se pinten los números)
         Squares_OTP()
 
-        // Botón de verificar con tu diseño
-        Putbttns(onClick = { authVm.verifyOtp(otpInput) })
+        Putbttns(onClick = { }) // reenviar
+        Putbttns2(onClick = { }) // login con contraseña
 
-        // Tus otros botones de diseño
-        Putbttns2(onClick = {})
-        IconPbttn(onClick = {})
-        IconPbttn2(onClick = {})
+        IconPbttn(onClick = onBack)
+
+        IconPbttn2(onClick = {
+            if (currentCode.length == 6) {
+                viewModel.verifyOtp(currentCode)
+            }
+        })
+
+        // Indicador de carga si Firebase está validando
+        if (state is AuthState.Loading) {
+            androidx.compose.material3.LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
+                color = Color.Black
+            )
+        }
+
+        if (state is AuthState.Error) {
+            androidx.compose.material3.Text(
+                text = "Invalid code, try again",
+                color = Color.Red,
+                modifier = Modifier.align(Alignment.Center).padding(top = 180.dp)
+            )
+        }
     }
 }
 
+
 @Composable
 fun ScreenOTP(){
-    TextOTP()
     Squares_OTP()
     Putbttns(onClick = {})
     Putbttns2(onClick = {})

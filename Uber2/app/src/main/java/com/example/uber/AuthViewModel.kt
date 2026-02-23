@@ -34,8 +34,10 @@ class AuthViewModel : ViewModel() {
 
     // Datos del formulario
     var phoneNumber by mutableStateOf("")
+        private set
     var countryCode by mutableStateOf("+34")
     var verificationId by mutableStateOf("") // ID que nos da Firebase para el SMS
+
 
     // Validar con libphonenumber
     fun isPhoneValid(): Boolean {
@@ -103,4 +105,8 @@ class AuthViewModel : ViewModel() {
         auth.signOut()
         authState = AuthState.Idle
     }
+}
+
+fun onPhoneChanged(newValue: String) {
+    phoneNumber = newValue
 }

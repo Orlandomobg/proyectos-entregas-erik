@@ -51,14 +51,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TextOTP() {
+fun TextOTP(phoneNumber: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 58.dp, start = 16.dp),
     ) {
         Text(
-            text = "Enter the 4-digit code sent you at 0698 23 13 09",
+            text = "Enter the 6-digit code sent you at $phoneNumber",
             style = TextStyle(
                 fontSize =20.sp,
                 lineHeight = 23.sp,
@@ -78,6 +78,8 @@ fun Squares_OTP(){
     var d2 by remember { mutableStateOf("") }
     var d3 by remember { mutableStateOf("") }
     var d4 by remember { mutableStateOf("") }
+    var d5 by remember { mutableStateOf("") }
+    var d6 by remember { mutableStateOf("") }
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(9.dp),
@@ -87,6 +89,8 @@ fun Squares_OTP(){
         Codebox(d2){ if (it.length <= 1) d2 = it }
         Codebox(d3){ if (it.length <= 1) d3 = it }
         Codebox(d4){ if (it.length <= 1) d4 = it }
+        Codebox(d5){ if (it.length <= 1) d5 = it }
+        Codebox(d6){ if (it.length <= 1) d6 = it }
     }
 }
 

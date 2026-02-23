@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 
@@ -23,15 +24,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
@@ -44,6 +53,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -75,90 +85,76 @@ fun Textmobile () {
         )
     }
 }
+
+// logica del numero del telefono
+
+data class Country(
+    val name: String,
+    val code: String,
+    val flagRes: Int // ID de la imagen de la bandera
+)
 @Composable
-fun CardNumber() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top= 93.dp, start = 35.dp)
+fun CardNumber(selectedCode: String, onCodeChange: (String) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
 
+    // Lo mantenemos como Box con clickable para que se vea EXACTO a tu diseño original
+    Box(modifier = Modifier
+        .width(104.dp)
+        .height(49.dp)
+        .background(color = Color(0xFFEEEEEE))
+        .clickable { expanded = true },
+        contentAlignment = Alignment.Center
     ) {
-        Box(modifier = Modifier
-            .width(104.dp)
-            .height(49.dp)
-            .background(color = Color(0xFFEEEEEE))
-    ){
-            Image(
-                painter = painterResource(id = R.drawable.image_3),
-                contentDescription = "Flag",
-                modifier = Modifier
-                    .width(43.dp)
-                    .height(27.dp)
-                    .align(Alignment.CenterStart)
-                    .offset(x = 10.dp)
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.arrow_down),
-                contentDescription = "image description",
-                modifier = Modifier
-                    .padding(1.dp)
-                    .width(10.dp)
-                    .height(5.dp)
-                    .align(Alignment.CenterEnd)
-                    .offset(x = -10.dp)
-
-            )
-
-    }
-    }
-}
-
-@Composable
-fun CardNumber2() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top= 93.dp, end = 35.dp),
-        horizontalAlignment = Alignment.End
-
-    ) {
-        Box(modifier = Modifier
-            .width(232.dp)
-            .height(49.dp)
-            .background(color = Color(0xFFEEEEEE))
-        ){
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            // Aquí puedes poner la imagen de la bandera si la tienes
             Text(
-                text = "+213",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF000000)
-                    ),
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .offset(x = 12.dp)
+                text = selectedCode,
+                style = TextStyle(fontSize = 14.sp, color = Color.Black)
             )
+        }
 
-            Text(
-                text = "Mobile number",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF747474),
-
-                    ),
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .offset(x = 50.dp)
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text("España (+34)") },
+                onClick = { onCodeChange("+34"); expanded = false }
             )
-
+            DropdownMenuItem(
+                text = { Text("Algeria (+213)") },
+                onClick = { onCodeChange("+213"); expanded = false }
+            )
         }
     }
 }
 
-
-
+@Composable
+fun CardNumber2(phoneNumber: String, onNumberChange: (String) -> Unit) {
+    Box(modifier = Modifier
+        .width(232.dp)
+        .height(49.dp)
+        .background(color = Color(0xFFEEEEEE))
+    ) {
+        BasicTextField(
+            value = phoneNumber,
+            onValueChange = onNumberChange,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 12.dp, top = 15.dp),
+            textStyle = TextStyle(fontSize = 14.sp, color = Color.Black),
+            decorationBox = { innerTextField ->
+                if (phoneNumber.isEmpty()) {
+                    Text(
+                        text = "Mobile number",
+                        color = Color(0xFF747474),
+                        fontSize = 14.sp,
+                        modifier = Modifier.offset(x = 38.dp) // Alineado a tu diseño
+                    )
+                }
+                innerTextField()
+            }
+        )
+    }
+}
 @Composable
 fun LoginBttn (onClick: () -> Unit) {
     Column(

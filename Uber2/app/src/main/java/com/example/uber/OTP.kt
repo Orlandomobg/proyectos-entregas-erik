@@ -176,25 +176,25 @@ fun Putbttns2(onClick: () -> Unit){
 fun IconPbttn(onClick: () -> Unit) {
     Column(modifier = Modifier.padding(top = 770.dp, start = 15.dp)
         .fillMaxWidth()) {
-    LargeFloatingActionButton(
-        onClick = { onClick() },
-        shape = CircleShape,
-        modifier = Modifier
-            .padding(1.dp)
-            .width(60.dp)
-            .height(60.dp)
-            .background(color = Color.Transparent),
-        containerColor = Color(0xFFEEEEEE),
-        elevation = FloatingActionButtonDefaults.elevation(0.dp)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.vector__2_),
-            contentDescription = null,
+        LargeFloatingActionButton(
+            onClick = { onClick() },
+            shape = CircleShape,
             modifier = Modifier
-                .size(16.dp)
+                .padding(1.dp)
+                .width(60.dp)
+                .height(60.dp)
+                .background(color = Color.Transparent),
+            containerColor = Color(0xFFEEEEEE),
+            elevation = FloatingActionButtonDefaults.elevation(0.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.vector__2_),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(16.dp)
 
-        )
-    }
+            )
+        }
     }
 }
 

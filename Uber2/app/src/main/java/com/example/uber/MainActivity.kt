@@ -1,78 +1,155 @@
 package com.example.uber
 
 
+import android.app.Activity
 import android.os.Bundle
-import android.text.Layout
+
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Scaffold
-
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.uber.ui.theme.UberTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.uber.navigation.AppNavigation
+import com.example.uber.navigation.Routes
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            UberTheme {
-            }
-            //pantalla_inicial()
-            //pantalla_login()
-            //ScreenOTP()
-            SafetyAlert()
+            // 1. Definir el NavController
+            val navController = rememberNavController()
+
+            // 2. Definir los ViewModels
+            // La función viewModel() se encarga de crearlos o recuperarlos si ya existen
+            val authVm: AuthViewModel = viewModel()
+
+            // 3. Pasarlos al AppNavigation
+            AppNavigation(
+                navController = navController,
+                authVm = authVm,
+            )
         }
     }
 }
 @Composable
-fun pantalla_inicial(){
+fun pantalla_inicial(onNavigateToLogin: () -> Unit){
     Screen()
     ImageUber()
     ImageCar()
     TextSafety()
-    OnBoardBttn(onClick={})
+    OnBoardBttn(onClick=onNavigateToLogin)
 }
 @Composable
-fun pantalla_login(){
-    ScreenLogin()
-    LoginBttn (onClick={})
-    LoginBttnFb(onClick={})
-    LoginBttnG (onClick={})
-    Textmobile()
-    CardNumber()
-    CardNumber2()
-    Textmobile2()
-    Textmobile3()
+fun PantallaLogin(authVm: AuthViewModel, navController: NavController) {
+    val context = LocalContext.current as Activity
+
+    // Escuchar cuando el código SMS es enviado para cambiar de pantalla
+    LaunchedEffect(authVm.authState) {
+        if (authVm.authState is AuthState.CodeSent) {
+            navController.navigate(Routes.OTP)
+        }
+    }
+
+    // Usamos Box para superponer los elementos sobre el fondo blanco
+    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
+
+        // 1. Título
+        Textmobile()
+
+        // 2. Bloque de Teléfono (Posicionado exactamente)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 93.dp, start = 35.dp, end = 35.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            CardNumber(authVm.countryCode) { authVm.countryCode = it }
+            CardNumber2(authVm.phoneNumber) { authVm.phoneNumber = it }
+        }
+
+        // 3. Textos de advertencia y botones sociales (tus funciones originales)
+        Textmobile2()
+        Textmobile3()
+
+        // 4. Botones con lógica
+        LoginBttn(onClick = { authVm.sendVerificationCode(context) })
+        LoginBttnFb(onClick = { /* Lógica FB */ })
+        LoginBttnG(onClick = { /* Lógica Google */ })
+
+        // Indicador de carga
+        if (authVm.authState is AuthState.Loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = Color.Black
+            )
+        }
+    }
+}
+@Composable
+fun PantallaOTP(authVm: AuthViewModel, navController: NavController) {
+    var otpInput by remember { mutableStateOf("") }
+
+    LaunchedEffect(authVm.authState) {
+        if (authVm.authState is AuthState.Authenticated) {
+            navController.navigate(Routes.HOME)
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
+        TextOTP() // Tu función visual
+
+        // Aquí deberías integrar el input dentro de tus "Squares"
+        // Por ahora, usamos un campo invisible para capturar el texto
+        BasicTextField(
+            value = otpInput,
+            onValueChange = { if (it.length <= 6) otpInput = it },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.align(Alignment.Center).alpha(0f) // Invisible pero funcional
+        )
+
+        // Dibujamos tus cuadros (puedes pasarle el otpInput para que se pinten los números)
+        Squares_OTP()
+
+        // Botón de verificar con tu diseño
+        Putbttns(onClick = { authVm.verifyOtp(otpInput) })
+
+        // Tus otros botones de diseño
+        Putbttns2(onClick = {})
+        IconPbttn(onClick = {})
+        IconPbttn2(onClick = {})
+    }
 }
 
 @Composable
@@ -90,111 +167,5 @@ fun SafetyAlert () {
     bckgrndI (onClick = {})
     Texts()
     SABttn1(onClick = {})
-}
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    UberTheme {
-        Greeting("Android")
-    }
-}
-
-@Composable
-fun Screen () {
-    Scaffold( containerColor = Color(0xFF276EF1)) { }
-}
-
-@Composable
-fun ImageUber () {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 97.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.uber_logo),
-            contentDescription = null,
-            modifier = Modifier
-                .width(79.dp)
-                .height(26.dp)
-        )
-    }
-}
-
-@Composable
-fun ImageCar () {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 207.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ubercar),
-            contentDescription = null,
-            modifier = Modifier
-                .width(174.dp)
-                .height(199.dp)
-        )
-    }
-}
-
-@Composable
-fun TextSafety () {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 446.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-    Text(text = "Move with Safety",
-        style = TextStyle(fontSize = 32.sp, color = Color.White, fontWeight = FontWeight(500)))
-    }
-}
-
-@Composable
-fun OnBoardBttn (onClick: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .offset(y = 825.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    )
-    {Button(onClick = { onClick() },shape = RectangleShape, modifier = Modifier
-        .width(343.dp)
-        .height(49.dp)
-        .background( color = Color.Black),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Black
-        )
-        ) {
-        Box(modifier = Modifier.fillMaxSize()){
-
-            Text(
-                text = "Get Started",
-                modifier = Modifier.align(Alignment.Center),
-                style = TextStyle(fontSize = 17.sp)
-            )
-
-            Image(
-                painter = painterResource(id = R.drawable.vector),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(16.dp)
-                    .align(Alignment.CenterEnd)
-            )
-
-        }
-    }}
-
 }
 

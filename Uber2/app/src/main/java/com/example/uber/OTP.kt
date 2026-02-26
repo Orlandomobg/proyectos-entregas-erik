@@ -73,27 +73,35 @@ fun TextOTP(phoneNumber: String) {
 }
 
 @Composable
-fun Squares_OTP(){
-    var d1 by remember { mutableStateOf("") }
-    var d2 by remember { mutableStateOf("") }
-    var d3 by remember { mutableStateOf("") }
-    var d4 by remember { mutableStateOf("") }
-    var d5 by remember { mutableStateOf("") }
-    var d6 by remember { mutableStateOf("") }
-
+fun Squares_OTP(
+    code: String,
+    onCodeChange: (String) -> Unit
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(9.dp),
         modifier = Modifier.padding(top = 120.dp, start = 16.dp)
-    ){
-        Codebox(d1){ if (it.length <= 1) d1 = it }
-        Codebox(d2){ if (it.length <= 1) d2 = it }
-        Codebox(d3){ if (it.length <= 1) d3 = it }
-        Codebox(d4){ if (it.length <= 1) d4 = it }
-        Codebox(d5){ if (it.length <= 1) d5 = it }
-        Codebox(d6){ if (it.length <= 1) d6 = it }
+    ) {
+        for (i in 0..5) {
+            Codebox(
+                value = if (i < code.length) code[i].toString() else "",
+                onValueChange = { newChar ->
+                    if (newChar.length <= 1) {
+                        val digits = code.toMutableList()
+                        if (newChar.isEmpty()) {
+                            // Borrar el dígito en posición i
+                            if (i < digits.size) digits.removeAt(i)
+                        } else {
+                            // Añadir/reemplazar dígito
+                            if (i < digits.size) digits[i] = newChar[0]
+                            else digits.add(newChar[0])
+                        }
+                        onCodeChange(digits.take(6).joinToString(""))
+                    }
+                }
+            )
+        }
     }
 }
-
 @Composable
 fun Codebox(
     value:String,
@@ -177,98 +185,57 @@ fun Putbttns2(onClick: () -> Unit){
 }
 
 @Composable
-fun IconPbttn(onClick: () -> Unit) {
-    Column(modifier = Modifier.padding(top = 770.dp, start = 15.dp)
-        .fillMaxWidth()) {
-        LargeFloatingActionButton(
-            onClick = { onClick() },
-            shape = CircleShape,
-            modifier = Modifier
-                .padding(1.dp)
-                .width(60.dp)
-                .height(60.dp)
-                .background(color = Color.Transparent),
-            containerColor = Color(0xFFEEEEEE),
-            elevation = FloatingActionButtonDefaults.elevation(0.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.vector__2_),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(16.dp)
-
-            )
-        }
+fun IconPbttn(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    LargeFloatingActionButton(
+        onClick = { onClick() },
+        shape = CircleShape,
+        modifier = modifier
+            .width(60.dp)
+            .height(60.dp),
+        containerColor = Color(0xFFEEEEEE),
+        elevation = FloatingActionButtonDefaults.elevation(0.dp)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.vector__2_),
+            contentDescription = null,
+            modifier = Modifier.size(16.dp)
+        )
     }
 }
 
 @Composable
-fun IconPbttn2(onClick: () -> Unit) {
-    Column(
-        modifier = Modifier.padding(top = 770.dp, end = 15.dp).fillMaxWidth(),
-        horizontalAlignment = Alignment.End
-        ) {
-
-        LargeFloatingActionButton(
-            onClick = { onClick() },
-            shape = CircleShape,
-            modifier = Modifier
-                .padding(1.dp)
-                .width(96.dp)
-                .height(60.dp)
-                .background(color = Color.Transparent),
-            containerColor = Color(0xFFEEEEEE),
-            elevation = FloatingActionButtonDefaults.elevation(0.dp)
-        ) {
-            Box(modifier = Modifier.fillMaxSize()){
-
+fun IconPbttn2(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    LargeFloatingActionButton(
+        onClick = { onClick() },
+        shape = CircleShape,
+        modifier = modifier
+            .width(96.dp)
+            .height(60.dp),
+        containerColor = Color(0xFFEEEEEE),
+        elevation = FloatingActionButtonDefaults.elevation(0.dp)
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Text(
                 text = "Next",
-                modifier = Modifier.align(Alignment.Center).offset(x = (-10).dp),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(x = (-10).dp),
                 style = TextStyle(fontSize = 17.sp)
             )
-
             Image(
                 painter = painterResource(id = R.drawable.vector__3_),
                 contentDescription = null,
                 modifier = Modifier
                     .size(16.dp)
-                    .align(Alignment.CenterEnd).offset(x = (-20).dp),
-
-
+                    .align(Alignment.CenterEnd)
+                    .offset(x = (-20).dp)
             )
-
-        }
         }
     }
 }
-/*@Composable
-fun Dynbttn(
-    text: String, onClick: () -> Unit){
-
-    Button(
-        onClick = { onClick() },
-        contentPadding = PaddingValues( vertical = 0.dp),
-        modifier =Modifier
-            .width(145.dp)
-            .height(34.dp)
-            .background(color = Color(0xFFEEEEEE), shape = RoundedCornerShape(size = 1000.dp)),
-        shape = RoundedCornerShape(size = 1000.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFEEEEEE),
-            contentColor = Color.Black
-        )
-    ) {
-        Text(
-            text = text,
-            maxLines = 1,
-            style = TextStyle(
-                fontSize = 10.sp,
-                fontWeight = FontWeight(500),
-                color = Color(0xFF000000),
-                ),
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-    }
-}*/

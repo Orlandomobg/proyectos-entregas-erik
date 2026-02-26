@@ -40,15 +40,17 @@ fun AppNavigation(
         }
 
         composable(route = Routes.OTP) {
-            PantallaOTP(authVm, navController)
+            PantallaOTP(authVm,
+                onBack = {navController.popBackStack()},
+                onSuccess = {
+                    navController.navigate(Routes.SAFETY) {
+                        popUpTo(Routes.LOGIN) { inclusive = true } // Limpiamos para que no pueda volver al login
+                    }
+                })
         }
 
         composable(route = Routes.SAFETY){
-            SafetyAlert(authVm,
-                onBack = { navController.popBackStack() },
-                onSuccess = {
-                    navController.navigate("Safety") {
-                        popUpTo("login") { inclusive = true })
+            SafetyAlert()
         }
 
     }

@@ -93,6 +93,8 @@ data class Country(
     val code: String,
     val flagRes: Int // ID de la imagen de la bandera
 )
+
+/* NO SE USA PORQUE TINES UNA MEJOR VERSION EN INPUTLOGIN
 @Composable
 fun CardNumber(selectedCode: String, onCodeChange: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
@@ -125,7 +127,9 @@ fun CardNumber(selectedCode: String, onCodeChange: (String) -> Unit) {
         }
     }
 }
+*/
 
+/* NO SE USA YA QUE TIENES LA VER DE LISTA DE PAISES
 @Composable
 fun CardNumber2(phoneNumber: String, onNumberChange: (String) -> Unit) {
     Box(modifier = Modifier
@@ -155,15 +159,17 @@ fun CardNumber2(phoneNumber: String, onNumberChange: (String) -> Unit) {
         )
     }
 }
+
+ */
 @Composable
-fun LoginBttn (onClick: () -> Unit) {
+fun LoginBttn (onNavigateToCode: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 158.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     )
-    {Button(onClick = { onClick() },shape = RectangleShape, modifier = Modifier
+    {Button(onClick = { onNavigateToCode() },shape = RectangleShape, modifier = Modifier
         .width(343.dp)
         .height(49.dp)
         .background( color = Color.Black),

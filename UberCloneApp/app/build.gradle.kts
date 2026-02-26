@@ -104,4 +104,19 @@ dependencies {
     // También incluye clases para Compose (rememberPaymentSheet, etc.).
     // Repo: github.com/stripe/stripe-android
 
+    // ── Google Sign-In (Credential Manager) ──
+    implementation("androidx.credentials:credentials:1.3.0")
+    // ↑ API unificada de Android para manejar credenciales
+    // (contraseñas, passkeys, tokens de Google, etc.).
+    // Reemplaza al antiguo GoogleSignInClient (deprecado).
+
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    // ↑ Conecta Credential Manager con Google Play Services.
+    // Es el "puente" que hace que Credential Manager pueda
+    // mostrar el selector de cuentas de Google en el dispositivo.
+
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    // ↑ Clases específicas para Google ID tokens.
+    // Proporciona GetGoogleIdOption y GoogleIdTokenCredential
+    // que usamos para construir la petición de login con Google.
 }

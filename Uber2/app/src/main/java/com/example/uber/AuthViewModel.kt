@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
@@ -34,18 +33,19 @@ class AuthViewModel : ViewModel() {
 
     // Datos del formulario
     var phoneNumber by mutableStateOf("")
-        private set
-    var countryCode by mutableStateOf("+34")
     var verificationId by mutableStateOf("") // ID que nos da Firebase para el SMS
 
 
     // Validar con libphonenumber
     fun isPhoneValid(): Boolean {
         return try {
-            val fullNumber = "$countryCode$phoneNumber"
-            val numberProto = phoneUtil.parse(fullNumber, null)
-            phoneUtil.isValidNumber(numberProto)
+            val fullNumber = phoneNumber
+            val numberProto = phoneUtil.parse(fullNumber, "ES")
+            val isValid = phoneUtil.isValidNumber(numberProto)
+            println("¿Es válido? $isValid")
+            isValid
         } catch (e: Exception) {
+            println("Error validando número: ${e.message}")
             false
         }
     }
@@ -58,7 +58,7 @@ class AuthViewModel : ViewModel() {
         }
 
         authState = AuthState.Loading
-        val fullNumber = "$countryCode$phoneNumber"
+        val fullNumber = phoneNumber
 
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(fullNumber)
@@ -69,11 +69,9 @@ class AuthViewModel : ViewModel() {
                     // En algunos casos (autoverificación), Firebase loguea solo
                     signInWithPhoneAuthCredential(credential)
                 }
-
                 override fun onVerificationFailed(e: FirebaseException) {
                     authState = AuthState.Error(e.localizedMessage ?: "Error en Firebase")
                 }
-
                 override fun onCodeSent(id: String, token: PhoneAuthProvider.ForceResendingToken) {
                     verificationId = id
                     authState = AuthState.CodeSent // Cambiamos el estado para navegar al OTP
@@ -81,6 +79,7 @@ class AuthViewModel : ViewModel() {
             })
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
+
     }
 
     // PASO 2: Verificar el código que el usuario mete a mano
@@ -105,8 +104,12 @@ class AuthViewModel : ViewModel() {
         auth.signOut()
         authState = AuthState.Idle
     }
-}
+    fun onPhoneChanged(newValue: String) {
+        phoneNumber = newValue
+    }
 
-fun onPhoneChanged(newValue: String) {
-    phoneNumber = newValue
+    fun resetState() {
+        authState = AuthState.Idle
+        verificationId = ""
+    }
 }

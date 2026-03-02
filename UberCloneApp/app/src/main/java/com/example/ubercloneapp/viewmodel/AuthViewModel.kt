@@ -18,6 +18,8 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.CustomCredential
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 
 // ═══════════════════════════════════════════
 //  ESTADOS DE LA AUTENTICACIÓN
@@ -32,12 +34,15 @@ sealed interface AuthState {
     data object Authenticated : AuthState  // Login/registro correcto
     data class  Error(val msg: String) : AuthState  // Algo falló
 }
-
-class AuthViewModel : ViewModel() {
-
-    // ── Instancia de Firebase Auth (singleton) ──
-    // FirebaseAuth.getInstance() siempre devuelve la MISMA instancia.
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+// DESPUÉS (con Hilt):
+@HiltViewModel
+// ↑ Le dice a Hilt: "este ViewModel tiene dependencias que tú gestionas".
+class AuthViewModel @Inject constructor(
+    private val auth: FirebaseAuth
+    // ↑ Hilt INYECTA la instancia de FirebaseAuth que creó en AppModule.
+    // El ViewModel no sabe cómo se crea — solo la usa.
+    // En tests, puedes pasar un FakeFirebaseAuth en su lugar.
+) : ViewModel() {
 
     // ── Estado observable por las pantallas ──
     var authState: AuthState by mutableStateOf(AuthState.Idle)
@@ -100,7 +105,7 @@ class AuthViewModel : ViewModel() {
 
     companion object {
         private const val WEB_CLIENT_ID =
-            "986849892680-4g770kl8805u4rmdj44b1eiua1hth23m.apps.googleusercontent.com"
+            "231065971527-hmf8lr459tv1t3stjqcm020fnutoigu0.apps.googleusercontent.com"
         // OJO (ESTO SIRVE PARA QUE SIGN IN DE GOOGLE FUNCIONE)
         // ↑ SUSTITUYE esto por tu Web Client ID real.
         // Lo encuentras en google-services.json → oauth_client → client_type: 3

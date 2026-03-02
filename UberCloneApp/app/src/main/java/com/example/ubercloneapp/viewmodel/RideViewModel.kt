@@ -1,9 +1,12 @@
 package com.example.ubercloneapp.viewmodel
 
 // ── Compose ──
+import android.app.NotificationManager
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.NotificationCompat
 
 // ── ViewModel + Coroutines ──
 import androidx.lifecycle.ViewModel
@@ -24,6 +27,9 @@ import com.google.android.gms.maps.model.LatLng
 
 // ── Modelo ──
 import com.example.ubercloneapp.model.Ride
+
+//R
+import com.example.ubercloneapp.R
 
 // ═══════════════════════════════════════════
 //  ESTADOS DEL VIAJE
@@ -107,21 +113,48 @@ class RideViewModel : ViewModel() {
         destination = latLng
         destinationName = name
 
+        android.util.Log.d("RideVM", "userLocation al setDestination: $userLocation")
+
         // Calcular precio estimado basado en distancia
         // (fórmula simplificada para fines didácticos)
         val origin = userLocation ?: return
         val distKm = haversineDistance(origin, latLng)
         estimatedPrice = ((2.5 + distKm * 1.2) * 100).toInt() / 100.0
         // ↑ Precio base 2.5€ + 1.2€/km. Redondeamos a 2 decimales.
+
+        android.util.Log.d("RideVM", "Precio calculado: $estimatedPrice")
     }
 
     // ═══════════════════════════════════════════
     //  PEDIR VIAJE (simulado)
     // ═══════════════════════════════════════════
-    fun requestRide() {
+
+    private fun sendLocalNotification(context: Context, title: String, body: String) {
+        val channelId = "uber_rides"
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE)
+                as NotificationManager
+
+        val notification = NotificationCompat.Builder(context, channelId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setAutoCancel(true)
+            .build()
+
+        manager.notify(System.currentTimeMillis().toInt(), notification)
+    }
+    fun requestRide(context : Context ) {
         if (destination == null || userLocation == null) return
 
         rideState = RideState.Searching
+
+        // Recalcular precio aquí, donde ya sabemos que userLocation no es null
+        val origin = userLocation!!
+        val dest = destination!!
+        val distKm = haversineDistance(origin, dest)
+        estimatedPrice = ((2.5 + distKm * 1.2) * 100).toInt() / 100.0
+
+        android.util.Log.d("RideVM", "Precio en requestRide: $estimatedPrice")
 
         viewModelScope.launch {
             // ── SIMULACIÓN: buscar conductor ──
@@ -140,6 +173,7 @@ class RideViewModel : ViewModel() {
                 driverName = driverName,
                 etaMinutes = eta
             )
+            sendLocalNotification(context, "🚗 Conductor asignado", "El conductor $driverName llega en 3 min")
 
             // ── SIMULACIÓN: el conductor llega y empieza el viaje ──
             delay(5000)  // Espera 5 segundos más
@@ -154,8 +188,10 @@ class RideViewModel : ViewModel() {
             // Guardar en Firestore y marcar como completado
             saveRideToFirestore(tripDuration)
             rideState = RideState.Completed
+            sendLocalNotification(context, "✅ Viaje completado", "Has llegado a tu destino")
         }
     }
+
 
     // ═══════════════════════════════════════════
     //  GUARDAR VIAJE EN FIRESTORE

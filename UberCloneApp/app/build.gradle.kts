@@ -4,14 +4,14 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
-
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "com.example.ubercloneapp"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.ubercloneapp"
@@ -43,6 +43,9 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    kotlinOptions {
+        jvmTarget = "11"
     }
 }
 
@@ -119,4 +122,20 @@ dependencies {
     // ↑ Clases específicas para Google ID tokens.
     // Proporciona GetGoogleIdOption y GoogleIdTokenCredential
     // que usamos para construir la petición de login con Google.
+
+    // ── Hilt ──
+    implementation("com.google.dagger:hilt-android:2.56")
+    ksp("com.google.dagger:hilt-compiler:2.56")
+    // ↑ Procesador de anotaciones. Genera el código de inyección.
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    // ↑ hiltViewModel() — obtener ViewModels inyectados en Compose.
+
+    implementation("com.google.firebase:firebase-messaging-ktx")
+// ↑ Firebase Cloud Messaging. La versión la gestiona el BOM.
+// Incluye el servicio que recibe mensajes en background.
+
+    implementation("com.google.firebase:firebase-storage-ktx")
+// ↑ Firebase Storage — almacenamiento de archivos (imágenes, PDFs, etc.).
+
+    implementation("io.coil-kt:coil-compose:2.6.0")
 }

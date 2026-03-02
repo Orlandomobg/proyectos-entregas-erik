@@ -8,4 +8,6 @@ object Routes {
     const val IN_PROGRESS = "ride_progress"  // Viaje en curso
     const val PAYMENT     = "payment"       // Pago con Stripe ← NUEVO
     const val HISTORY     = "ride_history"   // Historial
+
+    const val PROFILE = "profile" //perfil de usuario
 }

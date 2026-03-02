@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.uber.AuthViewModel
 import androidx.navigation.compose.NavHost
+import com.example.uber.Home
 import com.example.uber.PantallaLogin
 import com.example.uber.PantallaOTP
 import com.example.uber.SafetyAlert
@@ -50,8 +51,11 @@ fun AppNavigation(
         }
 
         composable(route = Routes.SAFETY){
-            SafetyAlert()
+            SafetyAlert(onNavigateToHome = {navController.navigate(Routes.HOME)})
         }
 
+        composable(route = Routes.HOME){
+            Home()
+        }
     }
 }

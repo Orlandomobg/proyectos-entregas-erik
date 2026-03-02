@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ fun RegisterScreen(
     // ↑ Error local (las contraseñas no coinciden) vs error de Firebase.
 
     val state = authVm.authState
+    val context = LocalContext.current  // ← NUEVO: para Google Sign-In
 
     LaunchedEffect(state) {
         if (state is AuthState.Authenticated) onRegisterOk()
@@ -40,6 +42,35 @@ fun RegisterScreen(
 
         Spacer(Modifier.height(32.dp))
 
+        // ═══════════════════════════════════════════
+        //  BOTÓN DE GOOGLE SIGN-IN  ← NUEVO
+        // ═══════════════════════════════════════════
+        // Con Google, registro y login son lo mismo:
+        // si el usuario es nuevo, Firebase lo crea;
+        // si ya existe, simplemente inicia sesión.
+        OutlinedButton(
+            onClick = { authVm.signInWithGoogle(context) },
+            enabled = state !is AuthState.Loading,
+            modifier = Modifier.fillMaxWidth().height(50.dp)
+        ) {
+            Text("🔵 Registrarse con Google")
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        // ── Separador ──
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            HorizontalDivider(Modifier.weight(1f))
+            Text("  o  ", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            HorizontalDivider(Modifier.weight(1f))
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        // ── Formulario email/contraseña (como antes) ──
         OutlinedTextField(
             value = email, onValueChange = { email = it },
             label = { Text("Email") }, singleLine = true,

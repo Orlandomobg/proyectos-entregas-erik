@@ -78,7 +78,7 @@ fun AccountImage(
     onClick: () -> Unit
 ) {
     Box(modifier = modifier
-        .size(60.dp)
+        .size(50.dp)
         .clip(CircleShape)
         .clickable(
             onClick = onClick,
@@ -87,7 +87,7 @@ fun AccountImage(
         )
     ) {
         Image(
-            painter = painterResource(id = R.drawable.image_7),
+            painter = painterResource(id = R.drawable.person),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -103,6 +103,17 @@ fun GreenImage(
         .border(width = 1.dp, color = Color(0xFFDEE4E2), shape = RoundedCornerShape(size = 8.dp))
         .background(color = Color(0xFF10462E), shape = RoundedCornerShape(8.dp))
     ) {
+        Text(
+            text = "Satisfy any carving",
+            style = androidx.compose.ui.text.TextStyle(
+                fontSize = 21.sp,
+                fontWeight = FontWeight(500),
+                color = Color(0xFFFFFFFF),
+            ),
+            modifier = Modifier
+                .offset(y = (38).dp,x = (17).dp)
+        )
+
         Image(
             painter = painterResource(id = R.drawable.food),
             contentDescription = "comida",
@@ -112,18 +123,7 @@ fun GreenImage(
                 .height(124.dp)
                 .align(Alignment.CenterEnd)
                 .offset(y = 5.5.dp)
-        )
-        Text(
-            text = "Satisfy any carving",
-            style = androidx.compose.ui.text.TextStyle(
-                fontSize = 21.sp,
-                fontWeight = FontWeight(500),
-                color = Color(0xFFFFFFFF),
-            ),
-            modifier = Modifier.fillMaxSize()
-                .width(188.dp)
-                .height(25.dp)
-                .padding(top = 38.dp, start = 17.dp)
+                .clip(RoundedCornerShape(8.dp))
         )
         // Botón corregido (sin el offset negativo que lo sacaba del cuadro)
         IconButton(
@@ -131,16 +131,17 @@ fun GreenImage(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(top = 65.dp)
-                .width(126.dp)
-                .offset(x= (-1).dp)
+                .width(130.dp)
+                .offset(x = 6.dp)
         ) {
             Text(
                 text = "Order on Eats",
                 style = androidx.compose.ui.text.TextStyle(
                     fontSize = 15.sp,
                     fontWeight = FontWeight(500),
-                    color = Color(0xFFFFFFFF),
-                )
+                    color = Color(0xFFFFFFFF)
+                ),
+                modifier = Modifier.offset(x = (-8).dp)
             )
             Image(
                 painter = painterResource(id = R.drawable.vector__7_),
@@ -148,7 +149,8 @@ fun GreenImage(
                 modifier = Modifier
                     .width(9.dp)
                     .height(9.dp)
-                    .align(Alignment.CenterEnd),
+                    .align(Alignment.CenterEnd)
+                    .offset(x = (-12).dp),
 
             )
 

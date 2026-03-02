@@ -1,8 +1,10 @@
 package com.example.ubercloneapp.ui.screen
 
+
 import android.Manifest
 // ↑ Contiene las constantes de permisos de Android.
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,7 +37,8 @@ fun HomeMapScreen(
     rideVm:       RideViewModel,
     onRequestRide: () -> Unit,   // Ir a pedir viaje
     onHistory:     () -> Unit,   // Ir al historial
-    onLogout:      () -> Unit    // Cerrar sesión
+    onLogout:      () -> Unit,   // Cerrar sesión
+    onProfile:     () -> Unit    // perfil
 ) {
     val context = LocalContext.current
     // ↑ Obtener el Context de Android. Necesario para LocationServices.
@@ -124,6 +127,18 @@ fun HomeMapScreen(
             }
 
             // ── Botones flotantes sobre el mapa ──
+            // 2. BOTÓN DE PERFIL (Arriba a la derecha)
+            SmallFloatingActionButton(
+                onClick = onProfile,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 48.dp, end = 16.dp),
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
+            ) {
+                Text("👤", style = MaterialTheme.typography.titleLarge)
+            }
             Column(
                 Modifier
                     .align(Alignment.BottomCenter)

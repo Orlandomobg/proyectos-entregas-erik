@@ -191,9 +191,9 @@ fun ScreenOTP(){
     }
 
 @Composable
-fun SafetyAlert () {
+fun SafetyAlert (onNavigateToHome: () -> Unit) {
     bckgrndI (onClick = {})
     Texts()
-    SABttn1(onClick = {})
+    SABttn1(onClick = {onNavigateToHome()})
 }
 

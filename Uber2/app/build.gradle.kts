@@ -50,7 +50,8 @@ dependencies {
     implementation(libs.compose.icons.extended)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.firebase.auth.ktx)
-    
+    implementation(libs.androidx.material3)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

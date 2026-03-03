@@ -38,7 +38,7 @@ fun PaymentScreen(
 
     // ── Inicializar Stripe con la Publishable Key ──
     LaunchedEffect(Unit) {
-        PaymentConfiguration.init(context, "pk_test_51T40z2AaW1eJlbQyAAMKLyQe4Au5q7bmHo9zJfmjhJzSAyyn2AlykZo1JU5PXoCymI7rBQFZDNWC5UHzh2nYgJxd004gjy51XC")
+        PaymentConfiguration.init(context, "pk_test_51T2XxMAhNkNhrbIgdN3AQ99ZhrRTSW3nO0qjERPZqDEjJbA8a2kWqRDWvqBJ3FBtk1y5HrfCETB6vZ25xauKjE8O00wnyHEO5v")
         // ↑ Configura el SDK de Stripe. Solo la clave PÚBLICA.
         // En producción, carga esto desde local.properties o BuildConfig.
     }

@@ -10,4 +10,6 @@ object Routes {
     const val HISTORY     = "ride_history"   // Historial
 
     const val PROFILE = "profile" //perfil de usuario
+
+    const val RIDE_DETAIL = "ride_detail/{rideId}"
 }

@@ -138,4 +138,20 @@ dependencies {
 // ↑ Firebase Storage — almacenamiento de archivos (imágenes, PDFs, etc.).
 
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+// ↑ Firebase Storage — almacenamiento de archivos (imágenes, PDFs, etc.).
+
+    implementation("io.coil-kt:coil-compose:2.6.0")
+// ↑ Coil = librería de carga de imágenes para Compose.
+// Descarga, cachea y muestra imágenes desde URL.
+// Alternativa moderna a Glide/Picasso.
+
+    implementation("androidx.room:room-runtime:2.6.1")
+// ↑ Librería principal de Room.
+    implementation("androidx.room:room-ktx:2.6.1")
+// ↑ Extensiones Kotlin: soporte para coroutines (suspend fun).
+    ksp("androidx.room:room-compiler:2.6.1")
+// ↑ Procesador que genera el código SQL a partir de tus anotaciones.
 }

@@ -143,6 +143,7 @@ class RideViewModel : ViewModel() {
 
         manager.notify(System.currentTimeMillis().toInt(), notification)
     }
+
     fun requestRide(context : Context ) {
         if (destination == null || userLocation == null) return
 

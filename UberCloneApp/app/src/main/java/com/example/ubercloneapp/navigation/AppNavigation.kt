@@ -2,8 +2,11 @@ package com.example.ubercloneapp.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.example.ubercloneapp.ui.*
 import com.example.ubercloneapp.ui.screen.HomeMapScreen
 import com.example.ubercloneapp.ui.screen.LoginScreen
@@ -11,6 +14,7 @@ import com.example.ubercloneapp.ui.screen.PaymentScreen
 import com.example.ubercloneapp.ui.screen.ProfileScreen
 import com.example.ubercloneapp.ui.screen.RegisterScreen
 import com.example.ubercloneapp.ui.screen.RequestRideScreen
+import com.example.ubercloneapp.ui.screen.RideDetailScreen
 import com.example.ubercloneapp.ui.screen.RideHistoryScreen
 import com.example.ubercloneapp.ui.screen.RideInProgressScreen
 import com.example.ubercloneapp.viewmodel.AuthViewModel
@@ -137,5 +141,21 @@ fun AppNavigation(
                 onBack = { navController.popBackStack() }
             )
         }
+
+        composable(
+            route = Routes.RIDE_DETAIL,
+            arguments = listOf(
+                navArgument("rideId") { type = NavType.StringType }
+            ),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "uberclone://ride/{rideId}"
+                }
+            )
+        ) { backStackEntry ->
+            val rideId = backStackEntry.arguments?.getString("rideId")
+            RideDetailScreen(rideId = rideId)
+        }
+
     }
 }

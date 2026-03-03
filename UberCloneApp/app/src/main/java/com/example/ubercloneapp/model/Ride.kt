@@ -31,6 +31,8 @@ data class Ride(
     val date:         String = "",
     // ↑ Fecha del viaje como string (ej: "2025-06-15").
 
-    val durationMins: Int    = 0
+    val durationMins: Int    = 0,
     // ↑ Duración estimada en minutos.
+
+    val distanceKm: Double = 0.0
 )

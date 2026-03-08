@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 // ↑ DAO = Data Access Object. Define las operaciones de la tabla.
 // Room genera la implementación SQL automáticamente.
 interface RideDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     // ↑ Si ya existe una fila con el mismo PrimaryKey → la reemplaza.
     // Así al sincronizar con Firestore no hay duplicados.

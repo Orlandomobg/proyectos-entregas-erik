@@ -30,6 +30,13 @@ import com.example.ubercloneapp.model.Ride
 
 //R
 import com.example.ubercloneapp.R
+import com.example.ubercloneapp.data.local.RideDao
+import com.example.ubercloneapp.data.local.RideEntity
+import com.example.ubercloneapp.data.local.toEntity
+import com.example.ubercloneapp.data.local.toRide
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
+import java.time.LocalDate
 
 // ═══════════════════════════════════════════
 //  ESTADOS DEL VIAJE
@@ -56,12 +63,12 @@ sealed interface RideState {
     data object Completed      : RideState
     // ↑ Viaje terminado. Se guardó en Firestore.
 }
-
-class RideViewModel : ViewModel() {
-
-    // ── Firebase (singletons) ──
-    private val auth = FirebaseAuth.getInstance()
-    private val db   = FirebaseFirestore.getInstance()
+@HiltViewModel
+class RideViewModel @Inject constructor(
+    private val rideDao: RideDao,
+    private val auth: FirebaseAuth,
+    private val db: FirebaseFirestore
+) : ViewModel() {
 
     // ── Estado del viaje (observable por las pantallas) ──
     var rideState: RideState by mutableStateOf(RideState.Idle)
@@ -84,6 +91,8 @@ class RideViewModel : ViewModel() {
     var estimatedPrice: Double by mutableStateOf(0.0)
         private set
 
+    var estimatedDistanceKm: Double by mutableStateOf(0.0)
+        private set
     // ── Nombre del conductor (simulado) ──
     var driverName: String by mutableStateOf("")
         private set
@@ -95,6 +104,9 @@ class RideViewModel : ViewModel() {
     // ── Mensaje de resultado ──
     var resultMsg: String by mutableStateOf("")
         private set
+
+    var lastRideId: String by mutableStateOf("")
+    private set
 
     // ═══════════════════════════════════════════
     //  ACTUALIZAR UBICACIÓN
@@ -187,6 +199,7 @@ class RideViewModel : ViewModel() {
             // En una app real, esto sería tracking GPS en tiempo real.
 
             // Guardar en Firestore y marcar como completado
+
             saveRideToFirestore(tripDuration)
             rideState = RideState.Completed
             sendLocalNotification(context, "✅ Viaje completado", "Has llegado a tu destino")
@@ -214,14 +227,24 @@ class RideViewModel : ViewModel() {
             price        = estimatedPrice,
             status       = "completed",
             date         = java.time.LocalDate.now().toString(),
-            durationMins = durationMins
+            durationMins = durationMins,
+            distanceKm   = estimatedDistanceKm
+            // ↑ Distancia calculada con haversineDistance().
         )
 
         viewModelScope.launch {
             try {
-                db.collection("rides").add(ride).await()
-                // ↑ Crea un nuevo documento en la colección "rides"
-                // con un ID generado automáticamente.
+                val docRef = db.collection("rides").add(ride).await()
+                // ↑ .add() devuelve un DocumentReference con el ID
+                // autogenerado por Firestore (ej: "aBcD1234xYz").
+                lastRideId = docRef.id
+                // ↑ Guardamos el ID para compartir via Deep Link.
+
+                // Guardar también en Room (caché offline)
+                val savedRide = ride.copy(firestoreId = docRef.id)
+                rideDao.insertAll(listOf(savedRide.toEntity()))
+                // ↑ Guardamos en Room con el firestoreId real.
+                // Así el historial offline tiene este viaje inmediatamente.
                 resultMsg = "✅ Viaje guardado"
             } catch (e: Exception) {
                 resultMsg = "❌ Error: ${e.localizedMessage}"
@@ -236,22 +259,54 @@ class RideViewModel : ViewModel() {
         val user = auth.currentUser ?: return
 
         viewModelScope.launch {
+            // ① PRIMERO: leer de Room (instantáneo, funciona offline)
+            // Esto muestra lo que haya en caché mientras esperamos a Firestore.
+            // Si no hay caché, rideHistory queda vacío hasta que Firestore responda.
+
+            // ② DESPUÉS: sincronizar con Firestore
             try {
                 val snapshot = db.collection("rides")
                     .whereEqualTo("userId", user.uid)
-                    // ↑ Solo viajes de ESTE usuario
                     .get()
                     .await()
 
                 rideHistory = snapshot.documents.mapNotNull { doc ->
-                    doc.toObject(Ride::class.java)
+                    doc.toObject(Ride::class.java)?.copy(
+                        firestoreId = doc.id
+                    )
                 }
+
+                // ③ Guardar en Room para offline
+                val entities = rideHistory.map { it.toEntity() }
+                rideDao.insertAll(entities)
+                // ↑ Room guarda los viajes localmente.
+                // La próxima vez que abras sin internet, los tendrás.
+
             } catch (_: Exception) {
-                rideHistory = emptyList()
+                // Sin internet → leer de Room
+                rideDao.getRidesByUser(user.uid).collect { entities ->
+                    rideHistory = entities.map { it.toRide() }
+                }
             }
         }
     }
 
+    private suspend fun saveRideToRoom(id: String, durationMins: Int) {
+        val user = auth.currentUser ?: return
+        val origin = userLocation ?: return
+        val dest = destination ?: return
+
+        val rideEntity = RideEntity(
+            firestoreId = id,
+            userId = user.uid,
+            driverName = driverName,
+            price = estimatedPrice,
+            distanceKm = haversineDistance(origin, dest),
+            status = "completed"
+        )
+
+        rideDao.insertAll(listOf(rideEntity))
+    }
     // ═══════════════════════════════════════════
     //  RESETEAR para un nuevo viaje
     // ═══════════════════════════════════════════

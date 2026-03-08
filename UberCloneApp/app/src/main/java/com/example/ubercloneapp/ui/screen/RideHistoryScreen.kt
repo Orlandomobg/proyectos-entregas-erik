@@ -1,5 +1,6 @@
 package com.example.ubercloneapp.ui.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,11 +9,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.ubercloneapp.viewmodel.RideViewModel
 
 @Composable
 fun RideHistoryScreen(
     rideVm: RideViewModel,
+    onRideClick: (String) -> Unit,
     onBack:  () -> Unit
 ) {
     // Cargar el historial al abrir la pantalla
@@ -24,7 +27,7 @@ fun RideHistoryScreen(
 
     Column(Modifier.fillMaxSize()) {
         // ── Barra superior ──
-        Row(Modifier.fillMaxWidth().padding(16.dp)) {
+        Row(Modifier.fillMaxWidth().padding(30.dp)) {
             TextButton(onClick = onBack) { Text("← Volver") }
             Spacer(Modifier.weight(1f))
             Text("📋 Mis Viajes", fontWeight = FontWeight.Bold)
@@ -47,7 +50,8 @@ fun RideHistoryScreen(
                     // LazyColumn solo renderiza los que están en pantalla
                     // (como RecyclerView en XML).
 
-                    Card(Modifier.fillMaxWidth()) {
+                    Card(
+                        Modifier.fillMaxWidth().clickable {onRideClick(ride.firestoreId)}) {
                         Column(Modifier.padding(16.dp)) {
                             Row(Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween) {

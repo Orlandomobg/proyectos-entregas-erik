@@ -1,6 +1,7 @@
 package com.example.ubercloneapp.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -138,12 +139,15 @@ fun AppNavigation(
         composable(Routes.HISTORY) {
             RideHistoryScreen(
                 rideVm = rideVm,
+                onRideClick = { rideId ->
+                    navController.navigate("${Routes.RIDE_DETAIL}/$rideId")
+                },
                 onBack = { navController.popBackStack() }
             )
         }
 
         composable(
-            route = Routes.RIDE_DETAIL,
+            route = "${Routes.RIDE_DETAIL}/{rideId}",
             arguments = listOf(
                 navArgument("rideId") { type = NavType.StringType }
             ),

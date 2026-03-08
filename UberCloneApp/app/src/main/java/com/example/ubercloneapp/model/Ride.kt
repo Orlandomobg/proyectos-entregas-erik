@@ -5,6 +5,7 @@ package com.example.ubercloneapp.model
 // necesita un constructor sin argumentos para deserializar.
 
 data class Ride(
+    val firestoreId:  String = "",
     val userId:       String = "",
     // ↑ UID del usuario (de Firebase Auth). Identifica quién pidió el viaje.
 

@@ -11,5 +11,5 @@ object Routes {
 
     const val PROFILE = "profile" //perfil de usuario
 
-    const val RIDE_DETAIL = "ride_detail/{rideId}"
+    const val RIDE_DETAIL = "ride_detail"
 }

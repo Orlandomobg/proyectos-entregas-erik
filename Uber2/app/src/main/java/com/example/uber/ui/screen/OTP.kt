@@ -1,14 +1,10 @@
-package com.example.uber
+package com.example.uber.ui.screen
 
-import android.widget.Button
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,29 +21,25 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
-import androidx.compose.material3.contentColorFor
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.uber.R
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.remember
+import androidx.compose.ui.text.input.KeyboardType
+
 
 @Composable
 fun TextOTP(phoneNumber: String) {
@@ -77,6 +68,8 @@ fun Squares_OTP(
     code: String,
     onCodeChange: (String) -> Unit
 ) {
+    val focusRequesters = remember { List(6) { FocusRequester() } }
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(9.dp),
         modifier = Modifier.padding(top = 120.dp, start = 16.dp)
@@ -84,16 +77,19 @@ fun Squares_OTP(
         for (i in 0..5) {
             Codebox(
                 value = if (i < code.length) code[i].toString() else "",
+                focusRequester = focusRequesters[i],
                 onValueChange = { newChar ->
                     if (newChar.length <= 1) {
                         val digits = code.toMutableList()
                         if (newChar.isEmpty()) {
-                            // Borrar el dígito en posición i
                             if (i < digits.size) digits.removeAt(i)
+                            // ← al borrar, vuelve al anterior
+                            if (i > 0) focusRequesters[i - 1].requestFocus()
                         } else {
-                            // Añadir/reemplazar dígito
                             if (i < digits.size) digits[i] = newChar[0]
                             else digits.add(newChar[0])
+                            // ← al escribir, avanza al siguiente
+                            if (i < 5) focusRequesters[i + 1].requestFocus()
                         }
                         onCodeChange(digits.take(6).joinToString(""))
                     }
@@ -101,27 +97,43 @@ fun Squares_OTP(
             )
         }
     }
+
+    // ── Poner foco en el primer cuadro al entrar ──
+    LaunchedEffect(Unit) {
+        focusRequesters[0].requestFocus()
+    }
 }
+
 @Composable
 fun Codebox(
-    value:String,
-    onValueChange: (String) -> Unit){
-
+    value: String,
+    focusRequester: FocusRequester,
+    onValueChange: (String) -> Unit
+) {
     TextField(
         value = value,
         onValueChange = onValueChange,
-        Modifier
+        modifier = Modifier
             .width(54.dp)
             .height(49.dp)
-            .background(color = Color(0xFFEEEEEE)),
+            .focusRequester(focusRequester), // ← conecta el foco
         colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color(0xFFD0D0D0),   // ← gris más oscuro al enfocar
+            unfocusedContainerColor = Color(0xFFEEEEEE), // ← gris claro sin foco
             focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        )
-
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black
+        ),
+        textStyle = TextStyle(
+            textAlign = TextAlign.Center,
+            fontSize = 18.sp,
+            fontWeight = FontWeight(500)
+        ),
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
     )
 }
-
 @Composable
 fun Putbttns(onClick: () -> Unit){
     Column(

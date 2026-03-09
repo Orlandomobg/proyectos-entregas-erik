@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.Uber" parent="android:Theme.Material.Light.NoActionBar" >
+        </style>
 
-    <style name="Theme.Uber" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Uber.Splash" parent="Theme.Uber">
+        <item name="android:windowBackground">#000000</item>
+        <!-- ↑ solo el splash es negro -->
+    </style>
 </resources>

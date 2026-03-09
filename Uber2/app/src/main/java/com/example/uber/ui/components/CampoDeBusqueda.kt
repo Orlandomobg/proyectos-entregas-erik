@@ -1,6 +1,5 @@
-package com.example.uber
+package com.example.uber.ui.components
 
-import android.R.attr.value
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

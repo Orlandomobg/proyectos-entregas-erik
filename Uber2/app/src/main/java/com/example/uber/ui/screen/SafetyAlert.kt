@@ -1,4 +1,4 @@
-package com.example.uber
+package com.example.uber.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,9 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.uber.R
 
 
 @Composable
@@ -76,7 +78,7 @@ fun Texts(){
         {
             Text(
                 text = "Uber’s Comunity Guidlines",
-                style = androidx.compose.ui.text.TextStyle(
+                style = TextStyle(
                     fontSize = 19.sp,
                     fontWeight = FontWeight(400),
                     color = Color(0xFF000000)),
@@ -84,7 +86,7 @@ fun Texts(){
             )
             Text(
                 text = "Safety and respect for all",
-                style = androidx.compose.ui.text.TextStyle(
+                style = TextStyle(
                     fontSize = 24.sp,
                     fontWeight = FontWeight(500),
                     color = Color(0xFF000000)),
@@ -92,7 +94,7 @@ fun Texts(){
             )
             Text(
                 text = "We’re commited, along with millions of riders and drivers, to:",
-                style = androidx.compose.ui.text.TextStyle(
+                style = TextStyle(
                     fontSize = 20.sp,
                     fontWeight = FontWeight(300),
                     color = Color(0xFF000000)),
@@ -100,7 +102,7 @@ fun Texts(){
             )
             Text(
                 text = "Treat everyone with kindness and respect",
-                style = androidx.compose.ui.text.TextStyle(
+                style = TextStyle(
                     fontSize = 18.sp,
                     lineHeight = 22.sp,
                     fontWeight = FontWeight(500),
@@ -109,7 +111,7 @@ fun Texts(){
 
             Text(
                 text = "Help keep one another safe",
-                style = androidx.compose.ui.text.TextStyle(
+                style = TextStyle(
                     fontSize = 18.sp,
                     lineHeight = 22.sp,
                     fontWeight = FontWeight(500),
@@ -118,7 +120,7 @@ fun Texts(){
 
             Text(
                 text = "Follow the law",
-                style = androidx.compose.ui.text.TextStyle(
+                style = TextStyle(
                     fontSize = 18.sp,
                     lineHeight = 22.sp,
                     fontWeight = FontWeight(500),
@@ -127,7 +129,7 @@ fun Texts(){
 
             Text(
                 text = "Everyone who uses Uber apps is expected to follow these guidlines.",
-                style = androidx.compose.ui.text.TextStyle(
+                style = TextStyle(
                     fontSize = 18.sp,
                     lineHeight = 22.93.sp,
                     fontWeight = FontWeight(300),
@@ -137,7 +139,7 @@ fun Texts(){
 
             Text(
                 text = "You can read about our Community Guidlines here",
-                style = androidx.compose.ui.text.TextStyle(
+                style = TextStyle(
                     fontSize = 16.sp,
                     lineHeight = 22.93.sp,
                     fontWeight = FontWeight(300),
@@ -189,7 +191,7 @@ fun SABttn1 (onClick: () -> Unit) {
             Text(
                 text = "I understand",
                 modifier = Modifier.align(Alignment.Center),
-                style = androidx.compose.ui.text.TextStyle(fontSize = 17.sp)
+                style = TextStyle(fontSize = 17.sp)
             )
 
 

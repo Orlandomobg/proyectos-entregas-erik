@@ -29,12 +29,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uber.AuthViewModel
+import com.example.uber.viewmodel.AuthViewModel
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import java.util.Locale
 
@@ -157,7 +156,6 @@ fun SeparatedPhoneInput(
 fun CountrySelectorScreen(authVm: AuthViewModel) {
     val countries = getAllGetCountries()
 
-    // Argelia por defecto (DZ)
     var selectedCountry by remember {
         mutableStateOf(countries.find { it.isoCode == "ES" } ?: countries[0])
     }

@@ -241,7 +241,7 @@ fun ScreenOTP(){
     }
 
 @Composable
-fun SafetyAlert (onNavigateToHome: () -> Unit) {
+fun SafetyAlert (onNavigateToHome: () -> Unit,onBack: () -> Unit) {
     val systemUiController = rememberSystemUiController()
 
     // fondo negro → iconos blancos
@@ -251,7 +251,8 @@ fun SafetyAlert (onNavigateToHome: () -> Unit) {
             darkIcons = true // ← iconos blancos
         )
     }
-    bckgrndI(onClick = {})
+
+    bckgrndI(onClick = {onBack()})
     Texts()
     SABttn1(onClick = { onNavigateToHome() })
 }

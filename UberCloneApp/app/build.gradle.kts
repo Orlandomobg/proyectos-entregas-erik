@@ -154,4 +154,21 @@ dependencies {
 // ↑ Extensiones Kotlin: soporte para coroutines (suspend fun).
     ksp("androidx.room:room-compiler:2.6.1")
 // ↑ Procesador que genera el código SQL a partir de tus anotaciones.
+
+    // ── Unit Tests (corren en la JVM, sin emulador) ──
+    testImplementation("junit:junit:4.13.2")
+// ↑ Framework de testing estándar de Java/Kotlin.
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+// ↑ Para testear funciones suspend y coroutines.
+
+// ── UI Tests (corren en emulador/dispositivo) ──
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+// ↑ OBLIGATORIO. Proporciona AndroidJUnit4, el runner de tests.
+// Sin esto: "Unresolved reference: AndroidJUnit4".
+    androidTestImplementation("androidx.test:runner:1.5.2")
+// ↑ El motor que ejecuta los tests en el emulador.
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+// ↑ Framework para testear composables: simular clics, escribir texto, etc.
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+// ↑ Necesario para que los UI tests encuentren las Activities.
 }

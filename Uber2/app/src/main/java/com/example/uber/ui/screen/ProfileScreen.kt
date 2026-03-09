@@ -15,7 +15,7 @@ import com.example.uber.viewmodel.AuthViewModel
 
 
 @Composable
-fun ProfileScreen(onLogout: () -> Unit
+fun ProfileScreen(onLogout: () -> Unit, onBack: () -> Unit
 ) {
 
     Column(
@@ -48,5 +48,14 @@ fun ProfileScreen(onLogout: () -> Unit
                 fontSize = 21.sp,
             )
         }
+
+        Spacer(Modifier.height(490.dp))
+
+        IconPbttn(
+            modifier = Modifier
+                .align(alignment = Alignment.Start)
+                .padding(start = 15.dp, bottom = 32.dp),
+            onClick = {onBack()}
+        )
     }
 }

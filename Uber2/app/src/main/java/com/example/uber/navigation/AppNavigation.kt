@@ -86,7 +86,9 @@ fun AppNavigation(
         }
 
         composable(route = Routes.SAFETY){
-            SafetyAlert(onNavigateToHome = {navController.navigate(Routes.HOME)})
+            SafetyAlert(
+                onNavigateToHome = {navController.navigate(Routes.HOME) }
+            , onBack = {navController.navigate(Routes.HOME) })
         }
 
         composable(route = Routes.HOME){
@@ -111,7 +113,7 @@ fun AppNavigation(
                 navController.navigate(Routes.ONBOARDING) {
                     popUpTo(0) { inclusive = true }
                 }
-            })
+            }, onBack = { navController.popBackStack()})
         }
     }
 }
